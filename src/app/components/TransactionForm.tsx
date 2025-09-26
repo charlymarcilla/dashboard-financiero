@@ -1,5 +1,6 @@
 'use client';
 
+import { toast } from 'sonner';
 import React, { useState, useEffect } from 'react';
 import { Categoria } from './GestionarCategorias';
 import { Cuenta } from './GestionarCuentas';
