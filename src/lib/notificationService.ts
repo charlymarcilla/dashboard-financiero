@@ -1,3 +1,4 @@
+// Force new build
 import type { MetaAhorro } from '../app/components/MetasAhorro';
 import type { Categoria } from '../app/components/GestionarCategorias';
 import type { Transaction } from '../app/page';
