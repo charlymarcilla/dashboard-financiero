@@ -46,26 +46,24 @@ export function checkUpcomingTransactions(transactions: RecurringTransaction[], 
   const today = new Date();
   today.setHours(0, 0, 0, 0); // Normalizar a la medianoche
 
-  return transactions
-    .map(tx => {
-      const nextPaymentDate = new Date(tx.proxima_fecha_pago);
-      const daysUntilPayment = differenceInDays(nextPaymentDate, today);
+  return transactions.reduce((acc: Notification[], tx) => {
+    const nextPaymentDate = new Date(tx.proxima_fecha_pago);
+    const daysUntilPayment = differenceInDays(nextPaymentDate, today);
 
-      if (daysUntilPayment >= 0 && daysUntilPayment <= daysThreshold) {
-        let message = `Recordatorio: El pago de "${tx.descripcion}" `;
-        if (daysUntilPayment === 0) message += 'vence hoy.';
-        else if (daysUntilPayment === 1) message += 'vence mañana.';
-        else message += `vence en ${daysUntilPayment} días.`;
-        
-        return {
-          id: `recurring-${tx.id}`,
-          message,
-          type: 'alert' as const,
-        };
-      }
-      return null;
-    })
-    .filter((n): n is Notification => n !== null);
+    if (daysUntilPayment >= 0 && daysUntilPayment <= daysThreshold) {
+      let message = `Recordatorio: El pago de "${tx.descripcion}" `;
+      if (daysUntilPayment === 0) message += 'vence hoy.';
+      else if (daysUntilPayment === 1) message += 'vence mañana.';
+      else message += `vence en ${daysUntilPayment} días.`;
+      
+      acc.push({
+        id: `recurring-${tx.id}`,
+        message,
+        type: 'alert' as const,
+      });
+    }
+    return acc;
+  }, []);
 }
 
 /**
